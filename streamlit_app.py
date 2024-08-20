@@ -19,9 +19,9 @@ with open('model.pkl', 'rb') as file:
 
 
 
-#Setting Page Cnfirmation
+#Setting Page Confirmation
 
-st.set_page_config(page_title = "AutoValuate", page_icon = "", layout ="centered")
+st.set_page_config(page_title = "Titanic Survival", page_icon = "", layout ="centered")
 
 st.markdown("<div style='background-color:#219C90; border-radius:50px; align-items:center; justify-content: center;'><h1 style='text-align:center; color:white;'>Titanic Predictor</h1></div>",unsafe_allow_html=True)
 
