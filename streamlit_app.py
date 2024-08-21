@@ -17,6 +17,9 @@ test_df = pd.read_csv("test_cleaned.csv")
 train_df = pd.read_csv("train_cleaned.csv")
 
 
+X_train = train_df.drop('Survived', axis = 1)#Features
+y_train = train_df['Survived']#target
+
 
 
 #Setting Page Cnfirmation
@@ -89,9 +92,6 @@ def get_classifier(clf_name, params):
 clf = get_classifier(classifier_name, params)
 
 #Data Splitting for Classification 
-
-X_train = train_df.drop('Survived', axis = 1)#Features
-y_train = train_df['Survived']#target
 
 X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size = 0.2, randomstate= 42)
 
