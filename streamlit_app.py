@@ -27,16 +27,6 @@ scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_val = scaler.transform(X_val)
 test = scaler.transform(test_df)
-
-
-#Setting Page Cnfirmation
-
-st.set_page_config(page_title = "Titanic Model", layout ="centered")
-
-st.markdown("<div style='background-color:#219C90; border-radius:50px; align-items:center; justify-content: center;'><h1 style='text-align:center; color:white;'>Titanic Predictor</h1></div>",unsafe_allow_html=True)
-
-st.markdown("<h4 style='text-align:center; color:black;'>Find out if you would have survived during the Titanic disaster</h4>",unsafe_allow_html=True)
-
 #Selecting Model 
 
 classifier_name = st.sidebar.selectbox(
@@ -68,7 +58,16 @@ def get_classifier(clf_name, params):
 
 clf = get_classifier(classifier_name, params)
 
-#Data Splitting for Classification 
+
+
+
+#Setting Page Cnfirmation
+
+st.set_page_config(page_title = "Titanic Model", layout ="centered")
+
+st.markdown("<div style='background-color:#219C90; border-radius:50px; align-items:center; justify-content: center;'><h1 style='text-align:center; color:white;'>Titanic Predictor</h1></div>",unsafe_allow_html=True)
+
+st.markdown("<h4 style='text-align:center; color:black;'>Find out if you would have survived during the Titanic disaster</h4>",unsafe_allow_html=True)
 
 
 
