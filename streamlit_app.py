@@ -57,6 +57,8 @@ def get_classifier(clf_name, params):
   return clf
 
 clf = get_classifier(classifier_name, params)
+clf.fit(X_train, y_train)
+
 
 
 
@@ -121,13 +123,16 @@ df1 = df1[model_features]
 
 #Making Prediction by Trained ML Model 
 
-if pred: 
+if pred:
+
   if any([p_class is None, gender is None, age is None, sibsp is None, parch is None, fare is None, embarked is None]): 
     st.error("Please , select all inputs before pressing the predict button.", icon ="📝")
   else: 
-    clf.fit(X_train, y_train)
-    prediction = clf.predict([df1])
-    if prediction < 0: 
+    y_pred = clf.predict(X_val)
+    acc = accuracy_score(y_val, y_pred)
+    st.write(f'Classifier = {classifier_name}')
+    st.write(f'Accuracy = {acc}')
+    if y_pred < 0: 
       st.error('Prediction is below 0. Please select valid inputs',icon="⚠️")
     else: 
-      st.success(f"Preidction of your survival is : {prediction}", icon = "✅")
+      st.success(f"Preidction of your survival is : {y_pred}", icon = "✅")
