@@ -85,9 +85,9 @@ with col1:
   st.image("titanic.jpg", use_column_width = True)
 
 with col2:
-  p_class = st.selectbox(label = 'Select your economic class on the titanic', options = train_df['Pclass'].unique(), placeholder = 'Select your economic class on the titanic', index= none)
+  p_class = st.selectbox(label = 'Select your economic class on the titanic', options = train_df['Pclass'].unique(), placeholder = 'Select your economic class on the titanic', index= None)
 
-  gender = st.radio(label = 'Select your gender', options = train_df['Sex'].unique(), index= none)
+  gender = st.radio(label = 'Select your gender', options = train_df['Sex'].unique(), index= None)
 
   age = st.number_input(label = 'Enter your age',placeholder="Enter your age",value=None,min_value=0,max_value=99,step=1)
 
@@ -100,7 +100,7 @@ with col2:
   with col5:
     fare = st.number_input(label = 'Enter your fare',placeholder="Enter your fare ( Average Fare for pclass 1 : 84.15, pclass2:20.66, pclass3:13.68)",value=None,min_value=0,max_value=1000,step=10)
   with col6:
-    embarked = st.selectbox(label = 'Select your port of embarkation', options = train_df['Embarked'].unique(), placeholder = 'Select your port of embarkation (C = Cherbourg, Q = Queenstown, S = Southampton)', index= none)
+    embarked = st.selectbox(label = 'Select your port of embarkation', options = train_df['Embarked'].unique(), placeholder = 'Select your port of embarkation (C = Cherbourg, Q = Queenstown, S = Southampton)', index= None)
 
 
   pred = st.button("Predict", use_container_width = True)
