@@ -16,10 +16,17 @@ from sklearn.preprocessing import StandardScaler
 test_df = pd.read_csv("test_cleaned.csv")
 train_df = pd.read_csv("train_cleaned.csv")
 
-
 X_train = train_df.drop('Survived', axis = 1)#Features
 y_train = train_df['Survived']#target
 
+X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size = 0.2, randomstate= 42)
+
+#Feature Scaling 
+
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_val = scaler.transform(X_val)
+test = scaler.transform(test_df)
 
 
 #Setting Page Cnfirmation
@@ -28,7 +35,44 @@ st.set_page_config(page_title = "Titanic Model", layout ="centered")
 
 st.markdown("<div style='background-color:#219C90; border-radius:50px; align-items:center; justify-content: center;'><h1 style='text-align:center; color:white;'>Titanic Predictor</h1></div>",unsafe_allow_html=True)
 
-st.markdown("<h4 style='text-align:center; color:black;'>Find out if you would have survived during the Titanic disaster</h4>",unsafe_allow_html=True)#Styling Streamlit Web App
+st.markdown("<h4 style='text-align:center; color:black;'>Find out if you would have survived during the Titanic disaster</h4>",unsafe_allow_html=True)
+
+#Selecting Model 
+
+classifier_name = st.sidebar.selectbox(
+    'Select classifier',
+    ('Logistic Regression', 'Random Forest')
+)
+
+def add_parameter_ui(clf_name): 
+  params = {}
+  if clf_name == 'Logistic Regression': 
+    C = st.sidebar.slider('C', 0.01, 10.0)
+    params['C'] = C 
+  else: 
+    max_depth = st.sidebar.slider('max_depth', 2, 15)
+    params['max_depth'] = max_depth
+    n_estimators = st.sidebar.slider('n_estimators', 1, 100)
+    params['n_estimators'] = n_estimators
+  return params
+
+params = add_parameter_ui(classifier_name)
+
+def get_classifier(clf_name, params): 
+  clf = None
+  if clf_name =='Logistic Regression': 
+    clf = LogisticRegression(C = params['C'])
+  else: 
+    clf = RandomForestClassifier(n_estimators = params['n_estimators'], max_depth = params['max_depth'], random_state = 42)
+  return clf
+
+clf = get_classifier(classifier_name, params)
+
+#Data Splitting for Classification 
+
+
+
+#Styling Streamlit Web App
 
 col1, col2 = st.columns(2)
 
@@ -60,51 +104,6 @@ with col2:
 
   pred = st.button("Predict", use_container_width = True)
 
-#Selecting Model 
-
-classifier_name = st.sidebar.selectbox(
-    'Select classifier',
-    ('Logistic Regression', 'Random Forest')
-)
-
-def add_parameter_ui(clf_name): 
-  params = dict()
-  if clf_name == 'Logistic Regression': 
-    C = st.sidebar.slider('C', 0.01, 10.0)
-    params['C'] = C 
-  else: 
-    max_depth = st.sidebar.slider('max_depth', 2, 15)
-    params['max_depth'] = max_depth
-    n_estimators = st.sidebar.slider('n_estimators', 1, 100)
-    params['n_estimators'] = n_estimators
-  return params
-
-params = add_parameter_ui(classifier_name)
-
-def get_classifier(clf_name, params): 
-  clf = None
-  if clf_name =='Logistic Regression': 
-    clf = LogisticRegression(C = params['C'])
-  else: 
-    clf = RandomForestClassifier(n_estimators = params['n_estimators'], max_depth = params['max_depth'], random_state = 42)
-  return clf
-
-clf = get_classifier(classifier_name, params)
-
-#Data Splitting for Classification 
-
-X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size = 0.2, randomstate= 42)
-
-#Feature Scaling 
-
-scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_val = scaler.transform(X_val)
-test = scaler.transform(test_df)
-
-
-
-
   #Creating DataFrame
 input_df = pd.DataFrame({'Pclass':[p_class], 'Sex':[gender], 'Age':[age], 'SibSp':[sibsp], 'Parch':[parch], 'Fare':[fare], 'Embarked':[embarked]})
 
@@ -127,7 +126,8 @@ if pred:
   if any([p_class is None, gender is None, age is None, sibsp is None, parch is None, fare is None, embarked is None]): 
     st.error("Please , select all inputs before pressing the predict button.", icon ="📝")
   else: 
-    prediction = clf.predict(df1)[0]
+    clf.fit(X_train, y_train)
+    prediction = clf.predict([df1])
     if prediction < 0: 
       st.error('Prediction is below 0. Please select valid inputs',icon="⚠️")
     else: 
