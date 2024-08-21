@@ -2,8 +2,12 @@
 
 import streamlit as st
 import pandas as pd
-import sklearn
-import pickle
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score 
+from sklearn.preprocessing import StandardScaler
 
 
 
@@ -12,20 +16,48 @@ import pickle
 test_df = pd.read_csv("test_cleaned.csv")
 train_df = pd.read_csv("train_cleaned.csv")
 
-#Loading ML Model
-
-with open('model.pkl', 'rb') as file:
-  model = pickle.load(file)
 
 
 
-#Setting Page Confirmation
+#Setting Page Cnfirmation
 
-st.set_page_config(page_title = "Titanic Survival", page_icon = "", layout ="centered")
+st.set_page_config(page_title = "Titanic Model", layout ="centered")
 
 st.markdown("<div style='background-color:#219C90; border-radius:50px; align-items:center; justify-content: center;'><h1 style='text-align:center; color:white;'>Titanic Predictor</h1></div>",unsafe_allow_html=True)
 
 st.markdown("<h4 style='text-align:center; color:black;'>Find out if you would have survived during the Titanic disaster</h4>",unsafe_allow_html=True)
+
+#Selecting Model 
+
+classifier_name = st.sidebar.selectbox(
+    'Select classifier',
+    ('Logistic Regression', 'Random Forest')
+)
+
+def add_parameter_ui(clf_name): 
+  params = {}
+  if clf_name == 'Logistic Regression': 
+    C = st.sidebar.slider('C', 0.01, 10.0)
+    params['C'] = C 
+  else: 
+    max_depth = st.sidebar.slider('max_depth', 2, 15)
+    params['max_depth'] = max_depth
+    n_estimators = st.sidebar.slider('n_estimators', 1, 100)
+    params['n_estimators'] = n_estimators
+  return params
+
+params = add_parameter_ui(classifier_name)
+
+def get_classifier(clf_name, params): 
+  clf = None
+  if clf_name =='Logistic Regression': 
+    clf = LogisticRegression(C = params['C'])
+  else: 
+    clf = RandomForestClassifier(n_estimators = params['n_estimators'], max_depth = params['max_depth'], random_state = 42)
+  return clf
+
+clf = get_classifier(classifier_name, params)
+
 
 #Styling Streamlit Web App
 
@@ -38,7 +70,7 @@ with col1:
   st.write("  ")
   st.image("titanic.jpg", use_column_width = True)
 
-with col_2:
+with col2:
   p_class = st.selectbox(label = 'Select your economic class on the titanic', options = train_df['Pclass'].unique(), placeholder = 'Select your economic class on the titanic', index= none)
 
   gender = st.radio(label = 'Select your gender', options = train_df['Sex'].unique(), index= none)
@@ -81,7 +113,7 @@ if pred:
   if any([p_class is None, gender is None, age is None, sibsp is None, parch is None, fare is None, embarked is None]): 
     st.error("Please , select all inputs before pressing the predict button.", icon ="📝")
   else: 
-    prediction = model.predict(df1)[0]
+    prediction = clf.predict(df1)[0]
     if prediction < 0: 
       st.error('Prediction is below 0. Please select valid inputs',icon="⚠️")
     else: 
