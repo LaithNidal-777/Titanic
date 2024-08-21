@@ -68,7 +68,7 @@ classifier_name = st.sidebar.selectbox(
 )
 
 def add_parameter_ui(clf_name): 
-  params = {}
+  params = dict()
   if clf_name == 'Logistic Regression': 
     C = st.sidebar.slider('C', 0.01, 10.0)
     params['C'] = C 
