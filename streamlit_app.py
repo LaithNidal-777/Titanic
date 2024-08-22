@@ -19,8 +19,8 @@ st.markdown("<h4 style='text-align:center; color:black;'>Find out if you would h
 
 # Reading csv file
 
-test_df = pd.read_csv(r"C:\Users\User\Desktop\Data Files\Titanic Model Data\test_cleaned.csv")
-train_df = pd.read_csv(r"C:\Users\User\Desktop\Data Files\Titanic Model Data\train_cleaned.csv")
+test_df = pd.read_csv("test_cleaned.csv")
+train_df = pd.read_csv("train_cleaned.csv")
 
 #Styling Streamlit Web App
 
